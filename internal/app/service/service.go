@@ -4,6 +4,7 @@ import (
 	"github.com/VladimirSh98/Gophermart.git/internal/app/config"
 	"github.com/VladimirSh98/Gophermart.git/internal/app/database"
 	"github.com/VladimirSh98/Gophermart.git/internal/app/handler"
+	"github.com/VladimirSh98/Gophermart.git/internal/app/middleware"
 	operationsRepository "github.com/VladimirSh98/Gophermart.git/internal/app/repository/operations"
 	orderRepository "github.com/VladimirSh98/Gophermart.git/internal/app/repository/order"
 	rewardRepository "github.com/VladimirSh98/Gophermart.git/internal/app/repository/reward"
@@ -24,30 +25,35 @@ func Run() error {
 	conf := config.Config{}
 	err = conf.Load()
 	if err != nil {
-		sugar.Errorf("Error loading config: %v", err) // fatalf ???
+		sugar.Errorf("Error loading config: %v", err)
+		return err
 	}
 
 	var db database.DBConnectionStruct
 	err = db.OpenConnection(&conf)
 	if err != nil {
 		sugar.Errorf("Database connection failed: %v", err)
+		return err
 	}
 	defer db.CloseConnection()
 
-	err = db.UpgradeMigrations(&conf)
-	if err != nil {
-		sugar.Errorf("Database migrations failed: %v", err)
-	}
+	//err = db.UpgradeMigrations(&conf)
+	//if err != nil {
+	//	sugar.Errorf("Database migrations failed: %v", err)
+	//	return err
+	//}
 
 	customHandler := initHandler(&db)
 	router := chi.NewMux()
+	router.Use(middleware.Compress)
+	router.Use(middleware.Logger)
 	addEndpoints(router, customHandler)
 
 	return http.ListenAndServe(conf.RunAddress, router)
 }
 
 func addEndpoints(router *chi.Mux, handler *handler.Handler) {
-
+	router.Get("/ping", handler.Ping)
 }
 
 func initHandler(db *database.DBConnectionStruct) *handler.Handler {
