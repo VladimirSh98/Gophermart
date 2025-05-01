@@ -10,7 +10,7 @@ func Compress(h http.Handler) http.Handler {
 	logFn := func(writer http.ResponseWriter, request *http.Request) {
 		var err error
 
-		customCompressWriter := createCustomResponseWriter(writer)
+		customCompressWriter := CreateCustomResponseWriter(writer)
 
 		contentEncoding := request.Header.Get("Content-Encoding")
 		sendCompress := strings.Contains(contentEncoding, "gzip")

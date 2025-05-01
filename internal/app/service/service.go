@@ -5,11 +5,12 @@ import (
 	"github.com/VladimirSh98/Gophermart.git/internal/app/database"
 	"github.com/VladimirSh98/Gophermart.git/internal/app/handler"
 	"github.com/VladimirSh98/Gophermart.git/internal/app/middleware"
-	operationsRepository "github.com/VladimirSh98/Gophermart.git/internal/app/repository/operations"
+	"github.com/VladimirSh98/Gophermart.git/internal/app/middleware/authorization"
+	operationsRepository "github.com/VladimirSh98/Gophermart.git/internal/app/repository/operation"
 	orderRepository "github.com/VladimirSh98/Gophermart.git/internal/app/repository/order"
 	rewardRepository "github.com/VladimirSh98/Gophermart.git/internal/app/repository/reward"
 	userRepository "github.com/VladimirSh98/Gophermart.git/internal/app/repository/user"
-	operationsService "github.com/VladimirSh98/Gophermart.git/internal/app/service/operations"
+	operationService "github.com/VladimirSh98/Gophermart.git/internal/app/service/operation"
 	orderService "github.com/VladimirSh98/Gophermart.git/internal/app/service/order"
 	rewardService "github.com/VladimirSh98/Gophermart.git/internal/app/service/reward"
 	userService "github.com/VladimirSh98/Gophermart.git/internal/app/service/user"
@@ -22,38 +23,46 @@ func Run() error {
 	var err error
 	sugar := zap.S()
 
-	conf := config.Config{}
-	err = conf.Load()
+	config.Conf = config.Config{}
+	err = config.Conf.Load()
 	if err != nil {
 		sugar.Errorf("Error loading config: %v", err)
 		return err
 	}
 
 	var db database.DBConnectionStruct
-	err = db.OpenConnection(&conf)
+	err = db.OpenConnection(&config.Conf)
 	if err != nil {
 		sugar.Errorf("Database connection failed: %v", err)
 		return err
 	}
 	defer db.CloseConnection()
 
-	//err = db.UpgradeMigrations(&conf)
-	//if err != nil {
-	//	sugar.Errorf("Database migrations failed: %v", err)
-	//	return err
-	//}
+	err = db.UpgradeMigrations(&config.Conf)
+	if err != nil {
+		sugar.Errorf("Database migrations failed: %v", err)
+		return err
+	}
 
 	customHandler := initHandler(&db)
 	router := chi.NewMux()
 	router.Use(middleware.Compress)
 	router.Use(middleware.Logger)
+
 	addEndpoints(router, customHandler)
 
-	return http.ListenAndServe(conf.RunAddress, router)
+	return http.ListenAndServe(config.Conf.RunAddress, router)
 }
 
 func addEndpoints(router *chi.Mux, handler *handler.Handler) {
-	router.Get("/ping", handler.Ping)
+	router.Route("/api/user", func(router chi.Router) {
+		router.Post("/register", handler.Register)
+		router.Post("/login", handler.Login)
+
+		loginGroup := router.Group(nil)
+		loginGroup.Use(authorization.Authorization(handler))
+	})
+
 }
 
 func initHandler(db *database.DBConnectionStruct) *handler.Handler {
@@ -61,7 +70,7 @@ func initHandler(db *database.DBConnectionStruct) *handler.Handler {
 	orderRepo := orderRepository.Repository{Conn: db.Conn}
 	userRepo := userRepository.Repository{Conn: db.Conn}
 	rewardRepo := rewardRepository.Repository{Conn: db.Conn}
-	newOperationsRepo := operationsService.NewService(operationsRepo)
+	newOperationsRepo := operationService.NewService(operationsRepo)
 	newOrderRepo := orderService.NewService(orderRepo)
 	newUserRepo := userService.NewService(userRepo)
 	newRewardRepo := rewardService.NewService(rewardRepo)

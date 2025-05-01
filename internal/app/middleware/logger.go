@@ -11,7 +11,7 @@ func Logger(h http.Handler) http.Handler {
 		var responseStatus, responseSize int
 
 		start := time.Now()
-		customWriter := createCustomResponseWriter(writer)
+		customWriter := CreateCustomResponseWriter(writer)
 		uri := request.RequestURI
 		method := request.Method
 		h.ServeHTTP(customWriter, request)

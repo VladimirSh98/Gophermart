@@ -2,3 +2,5 @@ run_address: "localhost:8080"
 accrual_system_address: "http://localhost:8099"
 migrations_dir: "./migrations"
 database_uri: "postgres://user:zhoskiy@localhost:5432/gophermart?sslmode=disable"
+secret_key: "gophermartsecretkey"
+token_exp: 3  # in hours

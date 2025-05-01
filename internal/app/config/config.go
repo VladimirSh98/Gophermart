@@ -1,5 +1,7 @@
 package config
 
+var Conf Config
+
 func (conf *Config) Load() error {
 	var err error
 
@@ -42,5 +44,12 @@ func (conf *Config) result(flagConf *Config, envConf *Config, baseConf *baseConf
 		conf.DatabaseURI = flagConf.DatabaseURI
 	}
 
+	if envConf.SecretKey != "" {
+		conf.SecretKey = envConf.SecretKey
+	} else {
+		conf.SecretKey = baseConf.SecretKey
+	}
+
 	conf.MigrationsDir = baseConf.MigrationsDir
+	conf.TokenExp = baseConf.TokenExp
 }

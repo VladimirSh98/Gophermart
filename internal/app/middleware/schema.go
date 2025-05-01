@@ -6,10 +6,6 @@ import (
 	"sync"
 )
 
-type contextKey string
-
-const UserIDKey contextKey = "userID"
-
 type CustomResponseWriter struct {
 	http.ResponseWriter
 	Size   int
@@ -18,7 +14,7 @@ type CustomResponseWriter struct {
 	Writer io.Writer
 }
 
-func createCustomResponseWriter(w http.ResponseWriter) *CustomResponseWriter {
+func CreateCustomResponseWriter(w http.ResponseWriter) *CustomResponseWriter {
 
 	return &CustomResponseWriter{ResponseWriter: w, Size: 0, Status: 200}
 }
