@@ -8,7 +8,7 @@ require (
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/go-chi/chi/v5 v5.2.1
 	github.com/jackc/pgx/v5 v5.7.4
-	github.com/pressly/goose/v3 v3.24.2
+	github.com/pressly/goose/v3 v3.18.0
 	go.uber.org/zap v1.27.0
 	gopkg.in/yaml.v3 v3.0.1
 )
