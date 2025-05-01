@@ -18,12 +18,12 @@ func (conf *Config) Load() error {
 		return err
 	}
 
-	conf.result(flagConf, envConf)
+	conf.result(flagConf, envConf, baseConf)
 
 	return nil
 }
 
-func (conf *Config) result(flagConf *Config, envConf *Config) {
+func (conf *Config) result(flagConf *Config, envConf *Config, baseConf *baseConfig) {
 	if envConf.RunAddress != "" {
 		conf.RunAddress = envConf.RunAddress
 	} else {
@@ -41,4 +41,6 @@ func (conf *Config) result(flagConf *Config, envConf *Config) {
 	} else {
 		conf.DatabaseURI = flagConf.DatabaseURI
 	}
+
+	conf.MigrationsDir = baseConf.MigrationsDir
 }

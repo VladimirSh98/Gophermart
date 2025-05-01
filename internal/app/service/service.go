@@ -34,7 +34,7 @@ func Run() error {
 	}
 	defer db.CloseConnection()
 
-	err = db.UpgradeMigrations()
+	err = db.UpgradeMigrations(&conf)
 	if err != nil {
 		sugar.Errorf("Database migrations failed: %v", err)
 	}
