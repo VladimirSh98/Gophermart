@@ -9,11 +9,11 @@ func (conf *Config) Load() error {
 		return err
 	}
 
-	flagConf := &flagConfig{}
-	flagConf.parse(baseConf)
+	flagConf := &Config{}
+	flagConf.parseFlag(baseConf)
 
-	envConf := &envConfig{}
-	err = envConf.parse()
+	envConf := &Config{}
+	err = envConf.parseEnv()
 	if err != nil {
 		return err
 	}
@@ -23,7 +23,7 @@ func (conf *Config) Load() error {
 	return nil
 }
 
-func (conf *Config) result(flagConf *flagConfig, envConf *envConfig) {
+func (conf *Config) result(flagConf *Config, envConf *Config) {
 	if envConf.RunAddress != "" {
 		conf.RunAddress = envConf.RunAddress
 	} else {
