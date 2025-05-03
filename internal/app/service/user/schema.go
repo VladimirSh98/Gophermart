@@ -4,7 +4,10 @@ import (
 	"github.com/VladimirSh98/Gophermart.git/internal/app/repository/user"
 )
 
-type ServiceInterface interface{}
+type ServiceInterface interface {
+	GetByLogin(login string, archived bool) (user.User, error)
+	Create(login string, password string) error
+}
 
 type Service struct {
 	Repo user.Repository

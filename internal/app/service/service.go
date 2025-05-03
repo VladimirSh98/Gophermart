@@ -4,6 +4,7 @@ import (
 	"github.com/VladimirSh98/Gophermart.git/internal/app/config"
 	"github.com/VladimirSh98/Gophermart.git/internal/app/database"
 	"github.com/VladimirSh98/Gophermart.git/internal/app/handler"
+	authHandler "github.com/VladimirSh98/Gophermart.git/internal/app/handler/auth"
 	"github.com/VladimirSh98/Gophermart.git/internal/app/middleware"
 	"github.com/VladimirSh98/Gophermart.git/internal/app/middleware/authorization"
 	operationsRepository "github.com/VladimirSh98/Gophermart.git/internal/app/repository/operation"
@@ -44,25 +45,33 @@ func Run() error {
 		return err
 	}
 
-	customHandler := initHandler(&db)
+	customAuthHandler := initAuthHandler(&db)
+	customHandker := initHandler(&db)
 	router := chi.NewMux()
 	router.Use(middleware.Compress)
 	router.Use(middleware.Logger)
 
-	addEndpoints(router, customHandler)
+	addEndpoints(router, customAuthHandler, customHandker)
 
 	return http.ListenAndServe(config.Conf.RunAddress, router)
 }
 
-func addEndpoints(router *chi.Mux, handler *handler.Handler) {
+func addEndpoints(router *chi.Mux, customAuthHandler *authHandler.Handler, handler *handler.Handler) {
 	router.Route("/api/user", func(router chi.Router) {
-		router.Post("/register", handler.Register)
-		router.Post("/login", handler.Login)
+		router.Post("/register", customAuthHandler.Register)
+		router.Post("/login", customAuthHandler.Login)
 
-		loginGroup := router.Group(nil)
-		loginGroup.Use(authorization.Authorization(handler))
+		authorizationGroup := router.Group(nil)
+		authorizationGroup.Use(authorization.Authorization(handler))
 	})
 
+}
+
+func initAuthHandler(db *database.DBConnectionStruct) *authHandler.Handler {
+	userRepo := userRepository.Repository{Conn: db.Conn}
+	newUserRepo := userService.NewService(userRepo)
+	newAuthHandler := authHandler.NewHandler(newUserRepo)
+	return newAuthHandler
 }
 
 func initHandler(db *database.DBConnectionStruct) *handler.Handler {
@@ -72,8 +81,8 @@ func initHandler(db *database.DBConnectionStruct) *handler.Handler {
 	rewardRepo := rewardRepository.Repository{Conn: db.Conn}
 	newOperationsRepo := operationService.NewService(operationsRepo)
 	newOrderRepo := orderService.NewService(orderRepo)
-	newUserRepo := userService.NewService(userRepo)
 	newRewardRepo := rewardService.NewService(rewardRepo)
-	newHandler := handler.NewHandler(newOperationsRepo, newOrderRepo, newUserRepo, newRewardRepo)
+	newUserRepo := userService.NewService(userRepo)
+	newHandler := handler.NewHandler(newOperationsRepo, newOrderRepo, newRewardRepo, newUserRepo)
 	return newHandler
 }

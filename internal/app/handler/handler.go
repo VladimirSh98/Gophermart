@@ -8,10 +8,10 @@ import (
 )
 
 type Handler struct {
-	operation operationService.ServiceInterface
-	order     orderService.ServiceInterface
-	reward    rewardService.ServiceInterface
-	user      userService.ServiceInterface
+	Operation operationService.ServiceInterface
+	Order     orderService.ServiceInterface
+	Reward    rewardService.ServiceInterface
+	User      userService.ServiceInterface
 }
 
 func NewHandler(
@@ -20,5 +20,5 @@ func NewHandler(
 	reward rewardService.ServiceInterface,
 	user userService.ServiceInterface,
 ) *Handler {
-	return &Handler{operation: operation, order: order, reward: reward, user: user}
+	return &Handler{Operation: operation, Order: order, Reward: reward, User: user}
 }

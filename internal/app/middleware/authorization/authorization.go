@@ -3,7 +3,6 @@ package authorization
 import (
 	"context"
 	"github.com/VladimirSh98/Gophermart.git/internal/app/handler"
-	"github.com/VladimirSh98/Gophermart.git/internal/app/middleware"
 	"net/http"
 )
 
@@ -26,10 +25,24 @@ func Authorization(handler *handler.Handler) func(h http.Handler) http.Handler {
 				w.WriteHeader(http.StatusUnauthorized)
 				return
 			}
-			customWriter := middleware.CreateCustomResponseWriter(w)
-			ctx := context.WithValue(r.Context(), UserIDKey, auth.userID)
-			h.ServeHTTP(customWriter, r.WithContext(ctx))
+			ctx := context.WithValue(r.Context(), UserIDKey, auth.UserID)
+			h.ServeHTTP(w, r.WithContext(ctx))
 		}
 		return http.HandlerFunc(logFn)
 	}
 }
+
+//func createToken(login string) (string, error) {
+//	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
+//		RegisteredClaims: jwt.RegisteredClaims{
+//			ExpiresAt: jwt.NewNumericDate(time.Now().Add(TokenExp)),
+//		},
+//		UserID: UserCount,
+//	})
+//	tokenString, err := token.SignedString([]byte(SecretKey))
+//	if err != nil {
+//		return "", 0, err
+//	}
+//	return tokenString, nil
+//}
+//}

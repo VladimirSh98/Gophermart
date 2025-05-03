@@ -10,7 +10,6 @@ type userAuth struct {
 	jwt.RegisteredClaims
 	tokenString string
 	token       *jwt.Token
-	login       string
-	password    string
-	userID      int
+	Login       string
+	UserID      int
 }
