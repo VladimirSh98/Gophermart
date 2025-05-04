@@ -101,8 +101,6 @@ func TestRegister(t *testing.T) {
 			defer ctrl.Finish()
 
 			mockService := mocks.NewMockServiceInterface(ctrl)
-			if test.testRequest.body != nil {
-			}
 			mockService.EXPECT().
 				Create("testUser", gomock.Any()).
 				Return(test.expect.err).AnyTimes()

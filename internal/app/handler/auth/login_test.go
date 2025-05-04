@@ -106,8 +106,6 @@ func TestLogin(t *testing.T) {
 			defer ctrl.Finish()
 
 			mockService := mocks.NewMockServiceInterface(ctrl)
-			if test.testRequest.body != nil {
-			}
 			mockService.EXPECT().
 				GetByLogin("testUser", false).
 				Return(test.expect.expectedUser, test.expect.err).AnyTimes()
