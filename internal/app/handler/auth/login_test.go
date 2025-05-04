@@ -19,6 +19,7 @@ func TestLogin(t *testing.T) {
 		contentType  string
 		expectedUser user.User
 		err          error
+		checkCookie  bool
 	}
 	type testRequest struct {
 		username string
@@ -36,6 +37,7 @@ func TestLogin(t *testing.T) {
 				contentType:  "",
 				expectedUser: user.User{},
 				err:          nil,
+				checkCookie:  false,
 			},
 			testRequest: testRequest{
 				body: struct{}{},
@@ -48,6 +50,7 @@ func TestLogin(t *testing.T) {
 				contentType:  "",
 				expectedUser: user.User{},
 				err:          sql.ErrNoRows,
+				checkCookie:  false,
 			},
 			testRequest: testRequest{
 				body: RegisterRequest{
@@ -66,7 +69,8 @@ func TestLogin(t *testing.T) {
 					Login:    "testUser",
 					Password: "$2a$10$R7tYatRL4Egf0uY9xCX2.OCIaX34QYbEQEtl4499C/7uGqJIDoCIW",
 				},
-				err: nil,
+				err:         nil,
+				checkCookie: false,
 			},
 			testRequest: testRequest{
 				body: RegisterRequest{
@@ -85,7 +89,8 @@ func TestLogin(t *testing.T) {
 					Login:    "testUser",
 					Password: "$2a$10$R7tYatRL4Egf0uY9xCX2.OCIaX34QYbEQEtl4499C/7uGqJIDoCIW",
 				},
-				err: nil,
+				err:         nil,
+				checkCookie: true,
 			},
 			testRequest: testRequest{
 				body: RegisterRequest{
@@ -115,6 +120,19 @@ func TestLogin(t *testing.T) {
 			assert.Equal(t, test.expect.status, result.StatusCode, "Неверный код ответа")
 			defer result.Body.Close()
 			assert.Equal(t, test.expect.contentType, result.Header.Get("Content-Type"), "Неверный тип контента в хедере")
+			if test.expect.checkCookie {
+				cookies := result.Cookies()
+				authCookie := false
+				for _, cookie := range cookies {
+					if cookie.Name == "Authorization" {
+						authCookie = true
+						break
+					}
+				}
+				if !authCookie {
+					t.Errorf("Отсутствует печенька авторизации")
+				}
+			}
 		})
 	}
 }
