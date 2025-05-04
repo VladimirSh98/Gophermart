@@ -3,6 +3,7 @@ package auth
 import (
 	"github.com/VladimirSh98/Gophermart.git/internal/app/config"
 	"github.com/golang-jwt/jwt/v4"
+	"golang.org/x/crypto/bcrypt"
 	"time"
 )
 
@@ -19,4 +20,9 @@ func CreateToken(login string) (string, error) {
 		return "", err
 	}
 	return tokenString, nil
+}
+
+func hashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	return string(bytes), err
 }
