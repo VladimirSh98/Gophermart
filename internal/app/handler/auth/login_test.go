@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"github.com/VladimirSh98/Gophermart.git/internal/app/repository/user"
-	"github.com/VladimirSh98/Gophermart.git/mocks"
+	userMock "github.com/VladimirSh98/Gophermart.git/mocks/user"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"net/http"
@@ -110,7 +110,7 @@ func TestLogin(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			mockService := mocks.NewMockServiceInterface(ctrl)
+			mockService := userMock.NewMockServiceInterface(ctrl)
 			mockService.EXPECT().
 				GetByLogin("testUser", false).
 				Return(test.expect.expectedUser, test.expect.err).AnyTimes()

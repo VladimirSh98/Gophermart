@@ -6,7 +6,7 @@ import (
 
 type ServiceInterface interface {
 	GetByLogin(login string, archived bool) (user.User, error)
-	Create(login string, password string) error
+	Create(login string, password string) (int, error)
 }
 
 type Service struct {

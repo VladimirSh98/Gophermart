@@ -85,8 +85,10 @@ func addEndpoints(
 
 func initAuthHandler(db *database.DBConnectionStruct) *authHandler.Handler {
 	userRepo := userRepository.Repository{Conn: db.Conn}
-	newUserRepo := userService.NewService(userRepo)
-	newAuthHandler := authHandler.NewHandler(newUserRepo)
+	newUserService := userService.NewService(userRepo)
+	rewardRepo := rewardRepository.Repository{Conn: db.Conn}
+	newRewardService := rewardService.NewService(rewardRepo)
+	newAuthHandler := authHandler.NewHandler(newUserService, newRewardService)
 	return newAuthHandler
 }
 
@@ -102,8 +104,8 @@ func initOrderHandler(db *database.DBConnectionStruct) *orderHandler.Handler {
 func initRewardHandler(db *database.DBConnectionStruct) *rewardHandler.Handler {
 	rewardRepo := rewardRepository.Repository{Conn: db.Conn}
 	newRewardService := rewardService.NewService(rewardRepo)
-	newAuthHandler := rewardHandler.NewHandler(newRewardService)
-	return newAuthHandler
+	newRewardHandler := rewardHandler.NewHandler(newRewardService)
+	return newRewardHandler
 }
 
 func initOperationHandler(db *database.DBConnectionStruct) *operationHanlder.Handler {

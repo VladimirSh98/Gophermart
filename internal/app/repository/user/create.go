@@ -1,15 +1,12 @@
 package user
 
-import (
-	"database/sql"
-)
-
-func (repo *Repository) Create(login string, password string) (sql.Result, error) {
-	query := "INSERT INTO \"user\" (login, password, archived) VALUES ($1, $2, false);"
-	res, err := repo.Conn.Exec(query, login, password)
+func (repo *Repository) Create(login string, password string) (int, error) {
+	query := "INSERT INTO \"user\" (login, password, archived) VALUES ($1, $2, false) RETURNING id;"
+	var ID int
+	err := repo.Conn.QueryRow(query, login, password).Scan(&ID)
 
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	return res, nil
+	return ID, nil
 }

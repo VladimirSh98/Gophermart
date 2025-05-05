@@ -32,13 +32,20 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	err = h.User.Create(data.Login, hashPass)
+	var UserID int
+	UserID, err = h.User.Create(data.Login, hashPass)
 	var pgErr *pgconn.PgError
 	if errors.As(err, &pgErr) && pgerrcode.IsIntegrityConstraintViolation(pgErr.Code) {
 		sugar.Infof("User with login %s already exist\n", data.Login)
 		w.WriteHeader(http.StatusConflict)
 		return
 	} else if err != nil {
+		sugar.Errorln(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	err = h.Reward.Create(UserID)
+	if err != nil {
 		sugar.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return

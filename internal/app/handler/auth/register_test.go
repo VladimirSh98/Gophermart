@@ -4,7 +4,8 @@ import (
 	"bytes"
 	"database/sql"
 	"encoding/json"
-	"github.com/VladimirSh98/Gophermart.git/mocks"
+	rewardMock "github.com/VladimirSh98/Gophermart.git/mocks/reward"
+	userMock "github.com/VladimirSh98/Gophermart.git/mocks/user"
 	"github.com/golang/mock/gomock"
 	"github.com/jackc/pgerrcode"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -100,11 +101,13 @@ func TestRegister(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			mockService := mocks.NewMockServiceInterface(ctrl)
-			mockService.EXPECT().
+			mockUserService := userMock.NewMockServiceInterface(ctrl)
+			mockUserService.EXPECT().
 				Create("testUser", gomock.Any()).
-				Return(test.expect.err).AnyTimes()
-			mockHandler := Handler{User: mockService}
+				Return(0, test.expect.err).AnyTimes()
+			mockRewardService := rewardMock.NewMockServiceInterface(ctrl)
+			mockRewardService.EXPECT().Create(gomock.Any()).Return(nil).AnyTimes()
+			mockHandler := Handler{User: mockUserService, Reward: mockRewardService}
 			mockHandler.Register(w, request)
 			result := w.Result()
 			assert.Equal(t, test.expect.status, result.StatusCode, "Неверный код ответа")

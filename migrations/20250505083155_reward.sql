@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE "reward" (
     id SERIAL PRIMARY KEY,
-    user_id integer not null,
+    user_id integer not null unique,
     balance float not null default 0,
     withdrawn float not null default 0,
     created_at timestamp default NOW(),
