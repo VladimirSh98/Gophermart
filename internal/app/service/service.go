@@ -1,16 +1,20 @@
 package service
 
 import (
+	accrualClient "github.com/VladimirSh98/Gophermart.git/internal/app/client/accrual"
 	"github.com/VladimirSh98/Gophermart.git/internal/app/config"
 	"github.com/VladimirSh98/Gophermart.git/internal/app/database"
-	"github.com/VladimirSh98/Gophermart.git/internal/app/handler"
 	authHandler "github.com/VladimirSh98/Gophermart.git/internal/app/handler/auth"
+	operationHanlder "github.com/VladimirSh98/Gophermart.git/internal/app/handler/operation"
+	orderHandler "github.com/VladimirSh98/Gophermart.git/internal/app/handler/order"
+	rewardHandler "github.com/VladimirSh98/Gophermart.git/internal/app/handler/reward"
 	"github.com/VladimirSh98/Gophermart.git/internal/app/middleware"
 	"github.com/VladimirSh98/Gophermart.git/internal/app/middleware/authorization"
-	operationsRepository "github.com/VladimirSh98/Gophermart.git/internal/app/repository/operation"
+	operationRepository "github.com/VladimirSh98/Gophermart.git/internal/app/repository/operation"
 	orderRepository "github.com/VladimirSh98/Gophermart.git/internal/app/repository/order"
 	rewardRepository "github.com/VladimirSh98/Gophermart.git/internal/app/repository/reward"
 	userRepository "github.com/VladimirSh98/Gophermart.git/internal/app/repository/user"
+	accrualService "github.com/VladimirSh98/Gophermart.git/internal/app/service/accrual"
 	operationService "github.com/VladimirSh98/Gophermart.git/internal/app/service/operation"
 	orderService "github.com/VladimirSh98/Gophermart.git/internal/app/service/order"
 	rewardService "github.com/VladimirSh98/Gophermart.git/internal/app/service/reward"
@@ -46,23 +50,35 @@ func Run() error {
 	}
 
 	customAuthHandler := initAuthHandler(&db)
-	customHandker := initHandler(&db)
-	router := chi.NewMux()
-	router.Use(middleware.Compress)
-	router.Use(middleware.Logger)
+	customOrderHandler := initOrderHandler(&db)
+	customOperationHandler := initOperationHandler(&db)
+	customRewardHandler := initRewardHandler(&db)
 
-	addEndpoints(router, customAuthHandler, customHandker)
+	router := chi.NewMux()
+	router.Use(middleware.Logger)
+	router.Use(middleware.Compress)
+
+	addEndpoints(router, customAuthHandler, customOrderHandler, customOperationHandler, customRewardHandler)
 
 	return http.ListenAndServe(config.Conf.RunAddress, router)
 }
 
-func addEndpoints(router *chi.Mux, customAuthHandler *authHandler.Handler, handler *handler.Handler) {
+func addEndpoints(
+	router *chi.Mux,
+	customAuthHandler *authHandler.Handler,
+	customOrderHandler *orderHandler.Handler,
+	customOperationHandler *operationHanlder.Handler,
+	customRewardHandler *rewardHandler.Handler,
+) {
 	router.Route("/api/user", func(router chi.Router) {
 		router.Post("/register", customAuthHandler.Register)
 		router.Post("/login", customAuthHandler.Login)
 
 		authorizationGroup := router.Group(nil)
-		authorizationGroup.Use(authorization.Authorization(handler))
+		authorizationGroup.Use(authorization.Authorization(customAuthHandler))
+		authorizationGroup.Get("/order", customOrderHandler.GetByUser)
+		authorizationGroup.Get("/balance", customRewardHandler.GetByUser)
+		authorizationGroup.Get("/withdrawals", customOperationHandler.GetByUser)
 	})
 
 }
@@ -74,15 +90,25 @@ func initAuthHandler(db *database.DBConnectionStruct) *authHandler.Handler {
 	return newAuthHandler
 }
 
-func initHandler(db *database.DBConnectionStruct) *handler.Handler {
-	operationsRepo := operationsRepository.Repository{Conn: db.Conn}
-	orderRepo := orderRepository.Repository{Conn: db.Conn}
-	userRepo := userRepository.Repository{Conn: db.Conn}
+func initOrderHandler(db *database.DBConnectionStruct) *orderHandler.Handler {
+	userRepo := orderRepository.Repository{Conn: db.Conn}
+	newUserRepo := orderService.NewService(userRepo)
+	newAccrualClient := accrualClient.NewHTTPClient()
+	newAccrualService := accrualService.NewService(newAccrualClient)
+	newAuthHandler := orderHandler.NewHandler(newUserRepo, newAccrualService)
+	return newAuthHandler
+}
+
+func initRewardHandler(db *database.DBConnectionStruct) *rewardHandler.Handler {
 	rewardRepo := rewardRepository.Repository{Conn: db.Conn}
-	newOperationsRepo := operationService.NewService(operationsRepo)
-	newOrderRepo := orderService.NewService(orderRepo)
-	newRewardRepo := rewardService.NewService(rewardRepo)
-	newUserRepo := userService.NewService(userRepo)
-	newHandler := handler.NewHandler(newOperationsRepo, newOrderRepo, newRewardRepo, newUserRepo)
-	return newHandler
+	newRewardService := rewardService.NewService(rewardRepo)
+	newAuthHandler := rewardHandler.NewHandler(newRewardService)
+	return newAuthHandler
+}
+
+func initOperationHandler(db *database.DBConnectionStruct) *operationHanlder.Handler {
+	operationRepo := operationRepository.Repository{Conn: db.Conn}
+	newOperationService := operationService.NewService(operationRepo)
+	newOperationHandler := operationHanlder.NewHandler(newOperationService)
+	return newOperationHandler
 }

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"database/sql"
 	"encoding/json"
-	"github.com/VladimirSh98/Gophermart.git/internal/mocks"
+	"github.com/VladimirSh98/Gophermart.git/mocks"
 	"github.com/golang/mock/gomock"
 	"github.com/jackc/pgerrcode"
 	"github.com/jackc/pgx/v5/pgconn"

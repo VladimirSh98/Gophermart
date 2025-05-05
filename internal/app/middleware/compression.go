@@ -25,12 +25,12 @@ func Compress(h http.Handler) http.Handler {
 			defer cr.Close()
 		}
 		if strings.Contains(request.Header.Get("Accept-Encoding"), "gzip") {
-			gzipWriter := gzip.NewWriter(customCompressWriter)
-			defer gzipWriter.Close()
+			gzipWriter := gzip.NewWriter(writer)
 			customCompressWriter.Writer = gzipWriter
+			defer gzipWriter.Close()
 			customCompressWriter.Header().Set("Content-Encoding", "gzip")
-			h.ServeHTTP(customCompressWriter, request)
 		}
+		h.ServeHTTP(customCompressWriter, request)
 	}
 	return http.HandlerFunc(logFn)
 }

@@ -1,15 +1,17 @@
 package order
 
 import (
-	"github.com/VladimirSh98/Gophermart.git/internal/app/repository/order"
+	orderRepo "github.com/VladimirSh98/Gophermart.git/internal/app/repository/order"
 )
 
-type ServiceInterface interface{}
-
-type Service struct {
-	Repo order.Repository
+type ServiceInterface interface {
+	GetByUser(UserID int) ([]orderRepo.Order, error)
 }
 
-func NewService(repo order.Repository) ServiceInterface {
+type Service struct {
+	Repo orderRepo.Repository
+}
+
+func NewService(repo orderRepo.Repository) ServiceInterface {
 	return &Service{Repo: repo}
 }

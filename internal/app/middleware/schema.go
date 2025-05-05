@@ -16,7 +16,7 @@ type CustomResponseWriter struct {
 
 func CreateCustomResponseWriter(w http.ResponseWriter) *CustomResponseWriter {
 
-	return &CustomResponseWriter{ResponseWriter: w, Size: 0, Status: 200}
+	return &CustomResponseWriter{ResponseWriter: w, Size: 0, Status: 200, Writer: nil}
 }
 
 func (lrw *CustomResponseWriter) WriteHeader(code int) {
@@ -25,7 +25,13 @@ func (lrw *CustomResponseWriter) WriteHeader(code int) {
 }
 
 func (lrw *CustomResponseWriter) Write(body []byte) (int, error) {
-	n, err := lrw.ResponseWriter.Write(body)
+	var n int
+	var err error
+	if lrw.Writer != nil {
+		n, err = lrw.Writer.Write(body)
+	} else {
+		n, err = lrw.ResponseWriter.Write(body)
+	}
 	lrw.Size += n
 	return n, err
 }

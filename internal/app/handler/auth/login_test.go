@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"github.com/VladimirSh98/Gophermart.git/internal/app/repository/user"
-	"github.com/VladimirSh98/Gophermart.git/internal/mocks"
+	"github.com/VladimirSh98/Gophermart.git/mocks"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"net/http"
