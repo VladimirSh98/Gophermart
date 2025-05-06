@@ -76,7 +76,7 @@ func addEndpoints(
 
 		authorizationGroup := router.Group(nil)
 		authorizationGroup.Use(authorization.Authorization(customAuthHandler))
-		authorizationGroup.Get("/order", customOrderHandler.GetByUser)
+		authorizationGroup.Get("/orders", customOrderHandler.GetByUser)
 		authorizationGroup.Get("/balance", customRewardHandler.GetByUser)
 		authorizationGroup.Get("/withdrawals", customOperationHandler.GetByUser)
 	})

@@ -65,7 +65,7 @@ func TestGetByUser(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.description, func(t *testing.T) {
-			request := httptest.NewRequest(http.MethodGet, "/api/user/withdrawals", nil)
+			request := httptest.NewRequest(http.MethodGet, "/api/user/balance", nil)
 			w := httptest.NewRecorder()
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
