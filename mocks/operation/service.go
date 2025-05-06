@@ -34,6 +34,20 @@ func (m *MockServiceInterface) EXPECT() *MockServiceInterfaceMockRecorder {
 	return m.recorder
 }
 
+// Create mocks base method.
+func (m *MockServiceInterface) Create(orderID string, UserID int, Value float64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", orderID, UserID, Value)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockServiceInterfaceMockRecorder) Create(orderID, UserID, Value interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockServiceInterface)(nil).Create), orderID, UserID, Value)
+}
+
 // GetByUser mocks base method.
 func (m *MockServiceInterface) GetByUser(UserID int) ([]operation.Operation, error) {
 	m.ctrl.T.Helper()

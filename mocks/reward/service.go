@@ -2,7 +2,7 @@
 // Source: internal/app/service/reward/schema.go
 
 // Package mocks is a generated GoMock package.
-package reward
+package mocks
 
 import (
 	reflect "reflect"
@@ -61,4 +61,18 @@ func (m *MockServiceInterface) GetByUser(UserID int) (reward.Reward, error) {
 func (mr *MockServiceInterfaceMockRecorder) GetByUser(UserID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByUser", reflect.TypeOf((*MockServiceInterface)(nil).GetByUser), UserID)
+}
+
+// UpdateByUser mocks base method.
+func (m *MockServiceInterface) UpdateByUser(UserID int, balance, withdrawn float64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateByUser", UserID, balance, withdrawn)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateByUser indicates an expected call of UpdateByUser.
+func (mr *MockServiceInterfaceMockRecorder) UpdateByUser(UserID, balance, withdrawn interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateByUser", reflect.TypeOf((*MockServiceInterface)(nil).UpdateByUser), UserID, balance, withdrawn)
 }

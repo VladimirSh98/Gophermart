@@ -7,6 +7,7 @@ import (
 	"github.com/VladimirSh98/Gophermart.git/internal/app/middleware/authorization"
 	operationRepo "github.com/VladimirSh98/Gophermart.git/internal/app/repository/operation"
 	operationMock "github.com/VladimirSh98/Gophermart.git/mocks/operation"
+	rewardMock "github.com/VladimirSh98/Gophermart.git/mocks/reward"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"io"
@@ -83,11 +84,12 @@ func TestGetByUser(t *testing.T) {
 			w := httptest.NewRecorder()
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
-			mockUserService := operationMock.NewMockServiceInterface(ctrl)
-			mockUserService.EXPECT().
+			mockOperationService := operationMock.NewMockServiceInterface(ctrl)
+			mockOperationService.EXPECT().
 				GetByUser(gomock.Any()).
 				Return(test.testRequest.operations, test.testRequest.err).AnyTimes()
-			customHandler := NewHandler(mockUserService)
+			mockRewardService := rewardMock.NewMockServiceInterface(ctrl)
+			customHandler := NewHandler(mockOperationService, mockRewardService)
 			ctx := context.WithValue(request.Context(), authorization.UserIDKey, 1)
 			customHandler.GetByUser(w, request.WithContext(ctx))
 			result := w.Result()
