@@ -1,4 +1,4 @@
-package auth
+package operation
 
 import (
 	operationService "github.com/VladimirSh98/Gophermart.git/internal/app/service/operation"

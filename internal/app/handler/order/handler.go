@@ -1,4 +1,4 @@
-package auth
+package order
 
 import (
 	accrualService "github.com/VladimirSh98/Gophermart.git/internal/app/service/accrual"

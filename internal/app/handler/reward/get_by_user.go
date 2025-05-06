@@ -1,4 +1,4 @@
-package auth
+package reward
 
 import (
 	"encoding/json"

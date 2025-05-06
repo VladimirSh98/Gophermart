@@ -1,4 +1,4 @@
-package auth
+package reward
 
 type GetByUserResponse struct {
 	Current   float64 `json:"current"`

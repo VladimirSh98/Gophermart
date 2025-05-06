@@ -1,4 +1,4 @@
-package auth
+package reward
 
 import (
 	rewardService "github.com/VladimirSh98/Gophermart.git/internal/app/service/reward"
