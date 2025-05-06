@@ -113,8 +113,7 @@ func TestGetByUser(t *testing.T) {
 			customHandler := NewHandler(mockUserService, mockAccrualService)
 			ctx := context.WithValue(request.Context(), authorization.UserIDKey, 1)
 			customHandler.GetByUser(w, request.WithContext(ctx))
-			var result *http.Response
-			result = w.Result()
+			result := w.Result()
 			defer result.Body.Close()
 			var body []byte
 			var err error
