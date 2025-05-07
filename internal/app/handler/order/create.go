@@ -122,7 +122,7 @@ func checkStatus(h *Handler, chIn chan string, chDone chan ProcessedResult) {
 		}
 		result, err := h.Accrual.GetByNumber(OrderID)
 		if err != nil {
-			sugar.Error(err)
+			sugar.Warn(err)
 			chDone <- ProcessedResult{
 				OrderID: OrderID,
 				Status:  InvalidStatus,
