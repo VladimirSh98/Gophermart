@@ -9,6 +9,7 @@ import (
 	orderRepo "github.com/VladimirSh98/Gophermart.git/internal/app/repository/order"
 	accrualMock "github.com/VladimirSh98/Gophermart.git/mocks/accrual"
 	orderMock "github.com/VladimirSh98/Gophermart.git/mocks/order"
+	rewardMock "github.com/VladimirSh98/Gophermart.git/mocks/reward"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"io"
@@ -110,7 +111,8 @@ func TestGetByUser(t *testing.T) {
 				GetByUser(gomock.Any()).
 				Return(test.testRequest.orders, test.testRequest.err).AnyTimes()
 			mockAccrualService := accrualMock.NewMockServiceInterface(ctrl)
-			customHandler := NewHandler(mockUserService, mockAccrualService)
+			mockRewardService := rewardMock.NewMockServiceInterface(ctrl)
+			customHandler := NewHandler(mockUserService, mockAccrualService, mockRewardService)
 			ctx := context.WithValue(request.Context(), authorization.UserIDKey, 1)
 			customHandler.GetByUser(w, request.WithContext(ctx))
 			result := w.Result()
