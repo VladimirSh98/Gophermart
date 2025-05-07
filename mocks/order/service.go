@@ -5,6 +5,7 @@
 package mocks
 
 import (
+	sql "database/sql"
 	reflect "reflect"
 
 	order "github.com/VladimirSh98/Gophermart.git/internal/app/repository/order"
@@ -79,15 +80,15 @@ func (mr *MockServiceInterfaceMockRecorder) GetByUser(UserID interface{}) *gomoc
 }
 
 // UpdateByID mocks base method.
-func (m *MockServiceInterface) UpdateByID(OrderID, Status string) error {
+func (m *MockServiceInterface) UpdateByID(OrderID, Status string, Value sql.NullFloat64) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateByID", OrderID, Status)
+	ret := m.ctrl.Call(m, "UpdateByID", OrderID, Status, Value)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // UpdateByID indicates an expected call of UpdateByID.
-func (mr *MockServiceInterfaceMockRecorder) UpdateByID(OrderID, Status interface{}) *gomock.Call {
+func (mr *MockServiceInterfaceMockRecorder) UpdateByID(OrderID, Status, Value interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateByID", reflect.TypeOf((*MockServiceInterface)(nil).UpdateByID), OrderID, Status)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateByID", reflect.TypeOf((*MockServiceInterface)(nil).UpdateByID), OrderID, Status, Value)
 }

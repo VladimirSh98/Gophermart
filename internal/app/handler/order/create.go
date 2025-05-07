@@ -85,14 +85,14 @@ func processingOrder(h *Handler, OrderID string, UserID int) {
 			time.Sleep(1 * time.Second)
 			continue
 		case ProcessingStatus:
-			err = h.Order.UpdateByID(result.OrderID, result.Status)
+			err = h.Order.UpdateByID(result.OrderID, result.Status, sql.NullFloat64{Float64: result.Accrual, Valid: true})
 			if err != nil {
 				sugar.Error(err)
 			}
 			time.Sleep(1 * time.Second)
 			continue
 		case InvalidStatus, ProcessedStatus:
-			err = h.Order.UpdateByID(result.OrderID, result.Status)
+			err = h.Order.UpdateByID(result.OrderID, result.Status, sql.NullFloat64{Float64: result.Accrual, Valid: true})
 			if err != nil {
 				sugar.Error(err)
 			}
@@ -102,7 +102,7 @@ func processingOrder(h *Handler, OrderID string, UserID int) {
 			}
 			return
 		default:
-			err = h.Order.UpdateByID(result.OrderID, InvalidStatus)
+			err = h.Order.UpdateByID(result.OrderID, InvalidStatus, sql.NullFloat64{Valid: false})
 			if err != nil {
 				sugar.Error(err)
 			}
