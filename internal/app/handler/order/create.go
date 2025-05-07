@@ -100,13 +100,14 @@ func processingOrder(h *Handler, OrderID string, UserID int) {
 			if err != nil {
 				sugar.Error(err)
 			}
+			return
 		default:
 			err = h.Order.UpdateByID(result.OrderID, InvalidStatus)
 			if err != nil {
 				sugar.Error(err)
 			}
+			return
 		}
-		break
 	}
 
 }
