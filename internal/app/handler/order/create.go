@@ -128,6 +128,7 @@ func checkStatus(ctx context.Context, h *Handler, chIn chan string, chDone chan 
 				return
 			}
 			result, err := h.Accrual.GetByNumber(OrderID)
+			sugar.Infoln(result)
 
 			if err != nil {
 				chDone <- ProcessedResult{
