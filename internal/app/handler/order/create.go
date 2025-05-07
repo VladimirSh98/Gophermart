@@ -105,9 +105,8 @@ func processingOrder(h *Handler, OrderID string, UserID int) {
 			if err != nil {
 				sugar.Error(err)
 			}
-
-			break
 		}
+		break
 	}
 
 }
