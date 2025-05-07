@@ -17,11 +17,10 @@ func (c *HTTPClient) GetByNumber(number string) (*Calculations, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-
 	var data Calculations
+	data.StatusCode = resp.StatusCode
 	if err = json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		return nil, err
 	}
-	data.StatusCode = resp.StatusCode
 	return &data, nil
 }
