@@ -117,10 +117,14 @@ func checkStatus(h *Handler, chIn chan string, chDone chan ProcessedResult) {
 	for {
 		OrderID, ok := <-chIn
 		if !ok {
-			sugar.Infoln("checkStatus done channel closed")
+			sugar.Infoln("checkStatus input channel closed")
 			return
 		}
 		result, err := h.Accrual.GetByNumber(OrderID)
+		if chDone == nil {
+			sugar.Infoln("checkStatus done channel closed")
+			return
+		}
 		if err != nil {
 			sugar.Warn(err)
 			chDone <- ProcessedResult{
