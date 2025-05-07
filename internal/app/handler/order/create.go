@@ -126,7 +126,6 @@ func checkStatus(h *Handler, chIn chan string, chDone chan ProcessedResult) {
 			return
 		}
 		if err != nil {
-			sugar.Warn(err)
 			chDone <- ProcessedResult{
 				OrderID: OrderID,
 				Status:  InvalidStatus,
