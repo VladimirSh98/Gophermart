@@ -80,6 +80,7 @@ func addEndpoints(
 		authorizationGroup.Get("/balance", customRewardHandler.GetByUser)
 		authorizationGroup.Get("/withdrawals", customOperationHandler.GetByUser)
 		authorizationGroup.Post("/balance/withdraw", customOperationHandler.Create)
+		authorizationGroup.Post("/orders", customOrderHandler.Create)
 	})
 
 }
@@ -98,7 +99,9 @@ func initOrderHandler(db *database.DBConnectionStruct) *orderHandler.Handler {
 	newUserRepo := orderService.NewService(userRepo)
 	newAccrualClient := accrualClient.NewHTTPClient()
 	newAccrualService := accrualService.NewService(newAccrualClient)
-	newAuthHandler := orderHandler.NewHandler(newUserRepo, newAccrualService)
+	rewardRepo := rewardRepository.Repository{Conn: db.Conn}
+	newRewardService := rewardService.NewService(rewardRepo)
+	newAuthHandler := orderHandler.NewHandler(newUserRepo, newAccrualService, newRewardService)
 	return newAuthHandler
 }
 

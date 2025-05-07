@@ -34,6 +34,20 @@ func (m *MockServiceInterface) EXPECT() *MockServiceInterfaceMockRecorder {
 	return m.recorder
 }
 
+// AccrueReward mocks base method.
+func (m *MockServiceInterface) AccrueReward(UserID int, accrual float64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AccrueReward", UserID, accrual)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AccrueReward indicates an expected call of AccrueReward.
+func (mr *MockServiceInterfaceMockRecorder) AccrueReward(UserID, accrual interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AccrueReward", reflect.TypeOf((*MockServiceInterface)(nil).AccrueReward), UserID, accrual)
+}
+
 // Create mocks base method.
 func (m *MockServiceInterface) Create(UserID int) error {
 	m.ctrl.T.Helper()

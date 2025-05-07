@@ -6,6 +6,9 @@ import (
 
 type ServiceInterface interface {
 	GetByUser(UserID int) ([]orderRepo.Order, error)
+	GetByID(OrderID string) (orderRepo.Order, error)
+	Create(OrderID string, UserID int) error
+	UpdateByID(OrderID string, Status string) error
 }
 
 type Service struct {
