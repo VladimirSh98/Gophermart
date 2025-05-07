@@ -133,6 +133,7 @@ func checkStatus(ctx context.Context, h *Handler, chIn chan string, chDone chan 
 					OrderID: OrderID,
 					Status:  InvalidStatus,
 				}
+				continue
 			}
 			if result.StatusCode == http.StatusOK {
 				chDone <- ProcessedResult{
