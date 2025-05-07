@@ -75,7 +75,6 @@ func processingOrder(h *Handler, OrderID string, UserID int) {
 	chIn := make(chan string)
 	defer close(chIn)
 	chDone := make(chan ProcessedResult)
-	defer close(chDone)
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	go checkStatus(ctx, h, chIn, chDone)
@@ -117,6 +116,7 @@ func processingOrder(h *Handler, OrderID string, UserID int) {
 
 func checkStatus(ctx context.Context, h *Handler, chIn chan string, chDone chan ProcessedResult) {
 	sugar := zap.S()
+	defer close(chDone)
 	for {
 		select {
 		case <-ctx.Done():
@@ -128,10 +128,7 @@ func checkStatus(ctx context.Context, h *Handler, chIn chan string, chDone chan 
 				return
 			}
 			result, err := h.Accrual.GetByNumber(OrderID)
-			if chDone == nil {
-				sugar.Infoln("checkStatus done channel closed")
-				return
-			}
+
 			if err != nil {
 				chDone <- ProcessedResult{
 					OrderID: OrderID,
