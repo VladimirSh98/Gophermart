@@ -129,10 +129,6 @@ func checkStatus(ctx context.Context, h *Handler, chIn chan string, chDone chan 
 			}
 			result, err := h.Accrual.GetByNumber(OrderID)
 			if err != nil {
-				chDone <- ProcessedResult{
-					OrderID: OrderID,
-					Status:  InvalidStatus,
-				}
 				continue
 			}
 			if result.StatusCode == http.StatusOK {
