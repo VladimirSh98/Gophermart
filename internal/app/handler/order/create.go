@@ -1,6 +1,7 @@
 package order
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"github.com/VladimirSh98/Gophermart.git/internal/app/middleware/authorization"
@@ -75,7 +76,9 @@ func processingOrder(h *Handler, OrderID string, UserID int) {
 	defer close(chIn)
 	chDone := make(chan ProcessedResult)
 	defer close(chDone)
-	go checkStatus(h, chIn, chDone)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go checkStatus(ctx, h, chIn, chDone)
 	var err error
 	for {
 		chIn <- OrderID
@@ -112,41 +115,46 @@ func processingOrder(h *Handler, OrderID string, UserID int) {
 
 }
 
-func checkStatus(h *Handler, chIn chan string, chDone chan ProcessedResult) {
+func checkStatus(ctx context.Context, h *Handler, chIn chan string, chDone chan ProcessedResult) {
 	sugar := zap.S()
 	for {
-		OrderID, ok := <-chIn
-		if !ok {
-			sugar.Infoln("checkStatus input channel closed")
+		select {
+		case <-ctx.Done():
+			sugar.Infoln("checkStatus context cancelled")
 			return
-		}
-		result, err := h.Accrual.GetByNumber(OrderID)
-		if chDone == nil {
-			sugar.Infoln("checkStatus done channel closed")
-			return
-		}
-		if err != nil {
-			chDone <- ProcessedResult{
-				OrderID: OrderID,
-				Status:  InvalidStatus,
+		case OrderID, ok := <-chIn:
+			if !ok {
+				sugar.Infoln("checkStatus input channel closed")
+				return
 			}
-		}
-		if result.StatusCode == http.StatusOK {
-			chDone <- ProcessedResult{
-				OrderID: OrderID,
-				Status:  result.Status,
-				Accrual: result.Accrual,
+			result, err := h.Accrual.GetByNumber(OrderID)
+			if chDone == nil {
+				sugar.Infoln("checkStatus done channel closed")
+				return
 			}
-		} else if result.StatusCode == http.StatusTooManyRequests {
-			time.Sleep(1 * time.Second)
-			chDone <- ProcessedResult{
-				OrderID: OrderID,
-				Status:  RegisteredStatus,
+			if err != nil {
+				chDone <- ProcessedResult{
+					OrderID: OrderID,
+					Status:  InvalidStatus,
+				}
 			}
-		} else {
-			chDone <- ProcessedResult{
-				OrderID: OrderID,
-				Status:  InvalidStatus,
+			if result.StatusCode == http.StatusOK {
+				chDone <- ProcessedResult{
+					OrderID: OrderID,
+					Status:  result.Status,
+					Accrual: result.Accrual,
+				}
+			} else if result.StatusCode == http.StatusTooManyRequests {
+				time.Sleep(1 * time.Second)
+				chDone <- ProcessedResult{
+					OrderID: OrderID,
+					Status:  RegisteredStatus,
+				}
+			} else {
+				chDone <- ProcessedResult{
+					OrderID: OrderID,
+					Status:  InvalidStatus,
+				}
 			}
 		}
 	}
