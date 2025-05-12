@@ -5,6 +5,7 @@
 package mocks
 
 import (
+	context "context"
 	reflect "reflect"
 
 	reward "github.com/VladimirSh98/Gophermart.git/internal/app/repository/reward"
@@ -35,58 +36,58 @@ func (m *MockServiceInterface) EXPECT() *MockServiceInterfaceMockRecorder {
 }
 
 // AccrueReward mocks base method.
-func (m *MockServiceInterface) AccrueReward(UserID int, accrual float64) error {
+func (m *MockServiceInterface) AccrueReward(ctx context.Context, userID int, accrual float64) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AccrueReward", UserID, accrual)
+	ret := m.ctrl.Call(m, "AccrueReward", ctx, userID, accrual)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // AccrueReward indicates an expected call of AccrueReward.
-func (mr *MockServiceInterfaceMockRecorder) AccrueReward(UserID, accrual interface{}) *gomock.Call {
+func (mr *MockServiceInterfaceMockRecorder) AccrueReward(ctx, userID, accrual interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AccrueReward", reflect.TypeOf((*MockServiceInterface)(nil).AccrueReward), UserID, accrual)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AccrueReward", reflect.TypeOf((*MockServiceInterface)(nil).AccrueReward), ctx, userID, accrual)
 }
 
 // Create mocks base method.
-func (m *MockServiceInterface) Create(UserID int) error {
+func (m *MockServiceInterface) Create(ctx context.Context, userID int) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", UserID)
+	ret := m.ctrl.Call(m, "Create", ctx, userID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockServiceInterfaceMockRecorder) Create(UserID interface{}) *gomock.Call {
+func (mr *MockServiceInterfaceMockRecorder) Create(ctx, userID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockServiceInterface)(nil).Create), UserID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockServiceInterface)(nil).Create), ctx, userID)
 }
 
 // GetByUser mocks base method.
-func (m *MockServiceInterface) GetByUser(UserID int) (reward.Reward, error) {
+func (m *MockServiceInterface) GetByUser(ctx context.Context, userID int) (reward.Reward, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByUser", UserID)
+	ret := m.ctrl.Call(m, "GetByUser", ctx, userID)
 	ret0, _ := ret[0].(reward.Reward)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetByUser indicates an expected call of GetByUser.
-func (mr *MockServiceInterfaceMockRecorder) GetByUser(UserID interface{}) *gomock.Call {
+func (mr *MockServiceInterfaceMockRecorder) GetByUser(ctx, userID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByUser", reflect.TypeOf((*MockServiceInterface)(nil).GetByUser), UserID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByUser", reflect.TypeOf((*MockServiceInterface)(nil).GetByUser), ctx, userID)
 }
 
 // UpdateByUser mocks base method.
-func (m *MockServiceInterface) UpdateByUser(UserID int, balance, withdrawn float64) error {
+func (m *MockServiceInterface) UpdateByUser(ctx context.Context, userID int, balance, withdrawn float64) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateByUser", UserID, balance, withdrawn)
+	ret := m.ctrl.Call(m, "UpdateByUser", ctx, userID, balance, withdrawn)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // UpdateByUser indicates an expected call of UpdateByUser.
-func (mr *MockServiceInterfaceMockRecorder) UpdateByUser(UserID, balance, withdrawn interface{}) *gomock.Call {
+func (mr *MockServiceInterfaceMockRecorder) UpdateByUser(ctx, userID, balance, withdrawn interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateByUser", reflect.TypeOf((*MockServiceInterface)(nil).UpdateByUser), UserID, balance, withdrawn)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateByUser", reflect.TypeOf((*MockServiceInterface)(nil).UpdateByUser), ctx, userID, balance, withdrawn)
 }

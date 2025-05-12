@@ -108,7 +108,7 @@ func TestGetByUser(t *testing.T) {
 			defer ctrl.Finish()
 			mockUserService := orderMock.NewMockServiceInterface(ctrl)
 			mockUserService.EXPECT().
-				GetByUser(gomock.Any()).
+				GetByUser(gomock.Any(), gomock.Any()).
 				Return(test.testRequest.orders, test.testRequest.err).AnyTimes()
 			mockAccrualService := accrualMock.NewMockServiceInterface(ctrl)
 			mockRewardService := rewardMock.NewMockServiceInterface(ctrl)

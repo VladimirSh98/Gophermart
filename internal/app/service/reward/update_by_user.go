@@ -1,7 +1,9 @@
 package reward
 
-func (s *Service) UpdateByUser(userID int, balance float64, withdrawn float64) error {
-	err := s.Repo.UpdateByUser(userID, balance, withdrawn)
+import "context"
+
+func (s *Service) UpdateByUser(ctx context.Context, userID int, balance float64, withdrawn float64) error {
+	err := s.Repo.UpdateByUser(ctx, userID, balance, withdrawn)
 	if err != nil {
 		return err
 	}

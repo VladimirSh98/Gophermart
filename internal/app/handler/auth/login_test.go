@@ -112,7 +112,7 @@ func TestLogin(t *testing.T) {
 
 			mockService := userMock.NewMockServiceInterface(ctrl)
 			mockService.EXPECT().
-				GetByLogin("testUser", false).
+				GetByLogin(gomock.Any(), "testUser", false).
 				Return(test.expect.expectedUser, test.expect.err).AnyTimes()
 			mockHandler := Handler{User: mockService}
 			mockHandler.Login(w, request)

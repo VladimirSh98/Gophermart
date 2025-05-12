@@ -5,6 +5,7 @@
 package mocks
 
 import (
+	context "context"
 	reflect "reflect"
 
 	accrual "github.com/VladimirSh98/Gophermart.git/internal/app/client/accrual"
@@ -35,16 +36,16 @@ func (m *MockServiceInterface) EXPECT() *MockServiceInterfaceMockRecorder {
 }
 
 // GetByNumber mocks base method.
-func (m *MockServiceInterface) GetByNumber(number string) (*accrual.Calculations, error) {
+func (m *MockServiceInterface) GetByNumber(ctx context.Context, number string) (*accrual.Calculations, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByNumber", number)
+	ret := m.ctrl.Call(m, "GetByNumber", ctx, number)
 	ret0, _ := ret[0].(*accrual.Calculations)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetByNumber indicates an expected call of GetByNumber.
-func (mr *MockServiceInterfaceMockRecorder) GetByNumber(number interface{}) *gomock.Call {
+func (mr *MockServiceInterfaceMockRecorder) GetByNumber(ctx, number interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByNumber", reflect.TypeOf((*MockServiceInterface)(nil).GetByNumber), number)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByNumber", reflect.TypeOf((*MockServiceInterface)(nil).GetByNumber), ctx, number)
 }

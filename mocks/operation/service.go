@@ -5,6 +5,7 @@
 package mocks
 
 import (
+	context "context"
 	reflect "reflect"
 
 	operation "github.com/VladimirSh98/Gophermart.git/internal/app/repository/operation"
@@ -35,30 +36,30 @@ func (m *MockServiceInterface) EXPECT() *MockServiceInterfaceMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockServiceInterface) Create(orderID string, UserID int, Value float64) error {
+func (m *MockServiceInterface) Create(ctx context.Context, orderID string, userID int, value float64) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", orderID, UserID, Value)
+	ret := m.ctrl.Call(m, "Create", ctx, orderID, userID, value)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockServiceInterfaceMockRecorder) Create(orderID, UserID, Value interface{}) *gomock.Call {
+func (mr *MockServiceInterfaceMockRecorder) Create(ctx, orderID, userID, value interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockServiceInterface)(nil).Create), orderID, UserID, Value)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockServiceInterface)(nil).Create), ctx, orderID, userID, value)
 }
 
 // GetByUser mocks base method.
-func (m *MockServiceInterface) GetByUser(UserID int) ([]operation.Operation, error) {
+func (m *MockServiceInterface) GetByUser(ctx context.Context, userID int) ([]operation.Operation, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByUser", UserID)
+	ret := m.ctrl.Call(m, "GetByUser", ctx, userID)
 	ret0, _ := ret[0].([]operation.Operation)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetByUser indicates an expected call of GetByUser.
-func (mr *MockServiceInterfaceMockRecorder) GetByUser(UserID interface{}) *gomock.Call {
+func (mr *MockServiceInterfaceMockRecorder) GetByUser(ctx, userID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByUser", reflect.TypeOf((*MockServiceInterface)(nil).GetByUser), UserID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByUser", reflect.TypeOf((*MockServiceInterface)(nil).GetByUser), ctx, userID)
 }

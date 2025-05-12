@@ -15,7 +15,8 @@ import (
 
 func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	sugar := zap.S()
-	userID := r.Context().Value(authorization.UserIDKey).(int)
+	ctx := r.Context()
+	userID := ctx.Value(authorization.UserIDKey).(int)
 	body, err := io.ReadAll(r.Body)
 	if err != nil || len(body) == 0 {
 		sugar.Errorln("CreateShortURL body read error", err)
@@ -31,7 +32,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = checkOrderByID(h, orderID, userID)
+	err = checkOrderByID(h, ctx, orderID, userID)
 	if errors.Is(err, ErrOrderLoadedByAnother) {
 		sugar.Warn(err)
 		w.WriteHeader(http.StatusConflict)
@@ -45,20 +46,20 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	err = h.Order.Create(orderID, userID)
+	err = h.Order.Create(ctx, orderID, userID)
 	if err != nil {
 		sugar.Error(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	go processingOrder(h, orderID, userID)
+	go processingOrder(h, ctx, orderID, userID)
 	w.WriteHeader(http.StatusAccepted)
 }
 
-func checkOrderByID(h *Handler, orderID string, userID int) error {
+func checkOrderByID(h *Handler, ctx context.Context, orderID string, userID int) error {
 	var order orderRepo.Order
 	var err error
-	order, err = h.Order.GetByID(orderID)
+	order, err = h.Order.GetByID(ctx, orderID)
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil
 	} else if err != nil {
@@ -70,7 +71,7 @@ func checkOrderByID(h *Handler, orderID string, userID int) error {
 	return ErrExistOrder
 }
 
-func processingOrder(h *Handler, orderID string, userID int) {
+func processingOrder(h *Handler, ctx context.Context, orderID string, userID int) {
 	sugar := zap.S()
 	chIn := make(chan string)
 	defer close(chIn)
@@ -87,24 +88,24 @@ func processingOrder(h *Handler, orderID string, userID int) {
 			time.Sleep(1 * time.Second)
 			continue
 		case ProcessingStatus:
-			err = h.Order.UpdateByID(result.OrderID, result.Status, sql.NullFloat64{Float64: result.Accrual, Valid: true})
+			err = h.Order.UpdateByID(ctx, result.OrderID, result.Status, sql.NullFloat64{Float64: result.Accrual, Valid: true})
 			if err != nil {
 				sugar.Error(err)
 			}
 			time.Sleep(1 * time.Second)
 			continue
 		case InvalidStatus, ProcessedStatus:
-			err = h.Order.UpdateByID(result.OrderID, result.Status, sql.NullFloat64{Float64: result.Accrual, Valid: true})
+			err = h.Order.UpdateByID(ctx, result.OrderID, result.Status, sql.NullFloat64{Float64: result.Accrual, Valid: true})
 			if err != nil {
 				sugar.Error(err)
 			}
-			err = h.Reward.AccrueReward(userID, result.Accrual)
+			err = h.Reward.AccrueReward(ctx, userID, result.Accrual)
 			if err != nil {
 				sugar.Error(err)
 			}
 			return
 		default:
-			err = h.Order.UpdateByID(result.OrderID, InvalidStatus, sql.NullFloat64{Valid: false})
+			err = h.Order.UpdateByID(ctx, result.OrderID, InvalidStatus, sql.NullFloat64{Valid: false})
 			if err != nil {
 				sugar.Error(err)
 			}
@@ -127,7 +128,7 @@ func checkStatus(ctx context.Context, h *Handler, chIn chan string, chDone chan 
 				sugar.Infoln("checkStatus input channel closed")
 				return
 			}
-			result, err := h.Accrual.GetByNumber(orderID)
+			result, err := h.Accrual.GetByNumber(ctx, orderID)
 			if err != nil {
 				continue
 			}

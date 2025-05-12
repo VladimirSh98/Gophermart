@@ -5,6 +5,7 @@
 package mocks
 
 import (
+	context "context"
 	sql "database/sql"
 	reflect "reflect"
 
@@ -36,59 +37,59 @@ func (m *MockServiceInterface) EXPECT() *MockServiceInterfaceMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockServiceInterface) Create(OrderID string, UserID int) error {
+func (m *MockServiceInterface) Create(ctx context.Context, orderID string, userID int) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", OrderID, UserID)
+	ret := m.ctrl.Call(m, "Create", ctx, orderID, userID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockServiceInterfaceMockRecorder) Create(OrderID, UserID interface{}) *gomock.Call {
+func (mr *MockServiceInterfaceMockRecorder) Create(ctx, orderID, userID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockServiceInterface)(nil).Create), OrderID, UserID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockServiceInterface)(nil).Create), ctx, orderID, userID)
 }
 
 // GetByID mocks base method.
-func (m *MockServiceInterface) GetByID(OrderID string) (order.Order, error) {
+func (m *MockServiceInterface) GetByID(ctx context.Context, orderID string) (order.Order, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByID", OrderID)
+	ret := m.ctrl.Call(m, "GetByID", ctx, orderID)
 	ret0, _ := ret[0].(order.Order)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetByID indicates an expected call of GetByID.
-func (mr *MockServiceInterfaceMockRecorder) GetByID(OrderID interface{}) *gomock.Call {
+func (mr *MockServiceInterfaceMockRecorder) GetByID(ctx, orderID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockServiceInterface)(nil).GetByID), OrderID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockServiceInterface)(nil).GetByID), ctx, orderID)
 }
 
 // GetByUser mocks base method.
-func (m *MockServiceInterface) GetByUser(UserID int) ([]order.Order, error) {
+func (m *MockServiceInterface) GetByUser(ctx context.Context, userID int) ([]order.Order, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByUser", UserID)
+	ret := m.ctrl.Call(m, "GetByUser", ctx, userID)
 	ret0, _ := ret[0].([]order.Order)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetByUser indicates an expected call of GetByUser.
-func (mr *MockServiceInterfaceMockRecorder) GetByUser(UserID interface{}) *gomock.Call {
+func (mr *MockServiceInterfaceMockRecorder) GetByUser(ctx, userID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByUser", reflect.TypeOf((*MockServiceInterface)(nil).GetByUser), UserID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByUser", reflect.TypeOf((*MockServiceInterface)(nil).GetByUser), ctx, userID)
 }
 
 // UpdateByID mocks base method.
-func (m *MockServiceInterface) UpdateByID(OrderID, Status string, Value sql.NullFloat64) error {
+func (m *MockServiceInterface) UpdateByID(ctx context.Context, orderID, status string, value sql.NullFloat64) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateByID", OrderID, Status, Value)
+	ret := m.ctrl.Call(m, "UpdateByID", ctx, orderID, status, value)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // UpdateByID indicates an expected call of UpdateByID.
-func (mr *MockServiceInterfaceMockRecorder) UpdateByID(OrderID, Status, Value interface{}) *gomock.Call {
+func (mr *MockServiceInterfaceMockRecorder) UpdateByID(ctx, orderID, status, value interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateByID", reflect.TypeOf((*MockServiceInterface)(nil).UpdateByID), OrderID, Status, Value)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateByID", reflect.TypeOf((*MockServiceInterface)(nil).UpdateByID), ctx, orderID, status, value)
 }

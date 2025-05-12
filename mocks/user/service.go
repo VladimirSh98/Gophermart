@@ -5,6 +5,7 @@
 package user
 
 import (
+	context "context"
 	reflect "reflect"
 
 	user "github.com/VladimirSh98/Gophermart.git/internal/app/repository/user"
@@ -35,31 +36,31 @@ func (m *MockServiceInterface) EXPECT() *MockServiceInterfaceMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockServiceInterface) Create(login, password string) (int, error) {
+func (m *MockServiceInterface) Create(ctx context.Context, login, password string) (int, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", login, password)
+	ret := m.ctrl.Call(m, "Create", ctx, login, password)
 	ret0, _ := ret[0].(int)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockServiceInterfaceMockRecorder) Create(login, password interface{}) *gomock.Call {
+func (mr *MockServiceInterfaceMockRecorder) Create(ctx, login, password interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockServiceInterface)(nil).Create), login, password)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockServiceInterface)(nil).Create), ctx, login, password)
 }
 
 // GetByLogin mocks base method.
-func (m *MockServiceInterface) GetByLogin(login string, archived bool) (user.User, error) {
+func (m *MockServiceInterface) GetByLogin(ctx context.Context, login string, archived bool) (user.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByLogin", login, archived)
+	ret := m.ctrl.Call(m, "GetByLogin", ctx, login, archived)
 	ret0, _ := ret[0].(user.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetByLogin indicates an expected call of GetByLogin.
-func (mr *MockServiceInterfaceMockRecorder) GetByLogin(login, archived interface{}) *gomock.Call {
+func (mr *MockServiceInterfaceMockRecorder) GetByLogin(ctx, login, archived interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByLogin", reflect.TypeOf((*MockServiceInterface)(nil).GetByLogin), login, archived)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByLogin", reflect.TypeOf((*MockServiceInterface)(nil).GetByLogin), ctx, login, archived)
 }

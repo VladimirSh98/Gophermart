@@ -103,10 +103,10 @@ func TestRegister(t *testing.T) {
 
 			mockUserService := userMock.NewMockServiceInterface(ctrl)
 			mockUserService.EXPECT().
-				Create("testUser", gomock.Any()).
+				Create(gomock.Any(), "testUser", gomock.Any()).
 				Return(0, test.expect.err).AnyTimes()
 			mockRewardService := rewardMock.NewMockServiceInterface(ctrl)
-			mockRewardService.EXPECT().Create(gomock.Any()).Return(nil).AnyTimes()
+			mockRewardService.EXPECT().Create(gomock.Any(), gomock.Any()).Return(nil).AnyTimes()
 			mockHandler := Handler{User: mockUserService, Reward: mockRewardService}
 			mockHandler.Register(w, request)
 			result := w.Result()

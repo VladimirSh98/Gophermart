@@ -1,6 +1,8 @@
 package user
 
-func (repo *Repository) Create(login string, password string) (int, error) {
+import "context"
+
+func (repo *Repository) Create(ctx context.Context, login string, password string) (int, error) {
 	query := "INSERT INTO \"user\" (login, password, archived) VALUES ($1, $2, false) RETURNING id;"
 	var ID int
 	err := repo.Conn.QueryRow(query, login, password).Scan(&ID)

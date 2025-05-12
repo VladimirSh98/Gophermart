@@ -1,7 +1,9 @@
 package user
 
-func (s *Service) Create(login string, password string) (int, error) {
-	UserID, err := s.Repo.Create(login, password)
+import "context"
+
+func (s *Service) Create(ctx context.Context, login string, password string) (int, error) {
+	UserID, err := s.Repo.Create(ctx, login, password)
 	if err != nil {
 		return 0, err
 	}

@@ -113,23 +113,23 @@ func TestCreate(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 			mockOrderService := orderMock.NewMockServiceInterface(ctrl)
-			mockOrderService.EXPECT().GetByID(gomock.Any()).Return(
+			mockOrderService.EXPECT().GetByID(gomock.Any(), gomock.Any()).Return(
 				test.testRequest.getOrder, test.testRequest.getOrderErr,
 			).AnyTimes()
-			mockOrderService.EXPECT().Create(gomock.Any(), gomock.Any()).Return(
+			mockOrderService.EXPECT().Create(gomock.Any(), gomock.Any(), gomock.Any()).Return(
 				test.testRequest.createOrderErr,
 			).AnyTimes()
-			mockOrderService.EXPECT().UpdateByID(gomock.Any(), gomock.Any(), gomock.Any()).Return(
+			mockOrderService.EXPECT().UpdateByID(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(
 				test.testRequest.updateOrderErr,
 			).AnyTimes()
 
 			mockAccrualService := accrualMock.NewMockServiceInterface(ctrl)
-			mockAccrualService.EXPECT().GetByNumber(gomock.Any()).Return(
+			mockAccrualService.EXPECT().GetByNumber(gomock.Any(), gomock.Any()).Return(
 				test.testRequest.accrual, test.testRequest.accrualErr,
 			).AnyTimes()
 
 			mockRewardService := rewardMock.NewMockServiceInterface(ctrl)
-			mockRewardService.EXPECT().AccrueReward(gomock.Any(), gomock.Any()).Return(
+			mockRewardService.EXPECT().AccrueReward(gomock.Any(), gomock.Any(), gomock.Any()).Return(
 				test.testRequest.accrualRewardErr,
 			).AnyTimes()
 

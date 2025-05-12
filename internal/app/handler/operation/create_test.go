@@ -181,15 +181,15 @@ func TestCreate(t *testing.T) {
 			defer ctrl.Finish()
 			mockOperationService := operationMock.NewMockServiceInterface(ctrl)
 			mockOperationService.EXPECT().
-				Create(gomock.Any(), gomock.Any(), gomock.Any()).
+				Create(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
 				Return(test.testRequest.operationCreateErr).AnyTimes()
 
 			mockRewardService := rewardMock.NewMockServiceInterface(ctrl)
 			mockRewardService.EXPECT().
-				GetByUser(1).
+				GetByUser(gomock.Any(), 1).
 				Return(test.testRequest.reward, test.testRequest.getRewardErr).AnyTimes()
 			mockRewardService.EXPECT().
-				UpdateByUser(1, gomock.Any(), gomock.Any()).
+				UpdateByUser(gomock.Any(), 1, gomock.Any(), gomock.Any()).
 				Return(test.testRequest.updateRewardErr).AnyTimes()
 
 			customHandler := NewHandler(mockOperationService, mockRewardService)

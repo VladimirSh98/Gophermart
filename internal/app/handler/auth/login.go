@@ -14,6 +14,7 @@ import (
 
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	sugar := zap.S()
+	ctx := r.Context()
 
 	data, err := checkLoginRequest(r)
 	if errors.Is(err, handler.ErrUnmarshal) || errors.Is(err, handler.ErrBodyRead) {
@@ -26,7 +27,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var user userRepo.User
-	user, err = h.User.GetByLogin(data.Login, false)
+	user, err = h.User.GetByLogin(ctx, data.Login, false)
 	if err != nil {
 		sugar.Infoln(err)
 		w.WriteHeader(http.StatusUnauthorized)

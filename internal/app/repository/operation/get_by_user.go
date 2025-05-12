@@ -1,6 +1,8 @@
 package operation
 
-func (repo *Repository) GetByUser(userID int) ([]Operation, error) {
+import "context"
+
+func (repo *Repository) GetByUser(ctx context.Context, userID int) ([]Operation, error) {
 	results := make([]Operation, 0)
 	query := "SELECT * FROM \"operation\" WHERE user_id = $1 ORDER BY created_at DESC"
 	rows, err := repo.Conn.Query(query, userID)

@@ -1,12 +1,13 @@
 package accrual
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 )
 
-func (c *HTTPClient) GetByNumber(number string) (*Calculations, error) {
+func (c *HTTPClient) GetByNumber(ctx context.Context, number string) (*Calculations, error) {
 	var data Calculations
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/orders/%s", c.baseURL, number), nil)
 	if err != nil {

@@ -14,7 +14,8 @@ import (
 
 func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	sugar := zap.S()
-	userID := r.Context().Value(authorization.UserIDKey).(int)
+	ctx := r.Context()
+	userID := ctx.Value(authorization.UserIDKey).(int)
 	var data CreateRequest
 	err := handleRequest(r, &data)
 	if err != nil {
@@ -29,7 +30,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var rewardInfo rewardRepo.Reward
-	rewardInfo, err = h.Reward.GetByUser(userID)
+	rewardInfo, err = h.Reward.GetByUser(ctx, userID)
 	if err != nil {
 		sugar.Error(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -42,13 +43,13 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusPaymentRequired)
 		return
 	}
-	err = h.Operation.Create(data.Order, userID, data.Sum)
+	err = h.Operation.Create(ctx, data.Order, userID, data.Sum)
 	if err != nil {
 		sugar.Error(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	err = h.Reward.UpdateByUser(userID, newBalance, newWithdrawn)
+	err = h.Reward.UpdateByUser(ctx, userID, newBalance, newWithdrawn)
 	if err != nil {
 		sugar.Error(err)
 		w.WriteHeader(http.StatusInternalServerError)

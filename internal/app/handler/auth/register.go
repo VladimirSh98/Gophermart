@@ -14,6 +14,7 @@ import (
 
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	sugar := zap.S()
+	ctx := r.Context()
 
 	data, err := checkRegisterRequest(r)
 	if errors.Is(err, handler.ErrUnmarshal) || errors.Is(err, handler.ErrBodyRead) {
@@ -32,8 +33,8 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	var UserID int
-	UserID, err = h.User.Create(data.Login, hashPass)
+	var userID int
+	userID, err = h.User.Create(ctx, data.Login, hashPass)
 	var pgErr *pgconn.PgError
 	if errors.As(err, &pgErr) && pgerrcode.IsIntegrityConstraintViolation(pgErr.Code) {
 		sugar.Infof("User with login %s already exist\n", data.Login)
@@ -44,7 +45,7 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	err = h.Reward.Create(UserID)
+	err = h.Reward.Create(ctx, userID)
 	if err != nil {
 		sugar.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)

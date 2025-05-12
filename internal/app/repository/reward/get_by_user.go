@@ -1,6 +1,8 @@
 package reward
 
-func (repo *Repository) GetByUser(userID int) (Reward, error) {
+import "context"
+
+func (repo *Repository) GetByUser(ctx context.Context, userID int) (Reward, error) {
 	var record Reward
 	query := "SELECT * FROM \"reward\" WHERE user_id = $1"
 	row := repo.Conn.QueryRow(query, userID)

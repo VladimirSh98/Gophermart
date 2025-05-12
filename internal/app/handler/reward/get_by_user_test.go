@@ -71,7 +71,7 @@ func TestGetByUser(t *testing.T) {
 			defer ctrl.Finish()
 			mockRewardService := rewardMock.NewMockServiceInterface(ctrl)
 			mockRewardService.EXPECT().
-				GetByUser(gomock.Any()).
+				GetByUser(gomock.Any(), gomock.Any()).
 				Return(test.testRequest.reward, test.testRequest.err).AnyTimes()
 			customHandler := NewHandler(mockRewardService)
 			ctx := context.WithValue(request.Context(), authorization.UserIDKey, 1)
