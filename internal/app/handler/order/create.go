@@ -32,7 +32,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = checkOrderByID(h, ctx, orderID, userID)
+	err = h.checkOrderByID(ctx, orderID, userID)
 	if errors.Is(err, ErrOrderLoadedByAnother) {
 		sugar.Warn(err)
 		w.WriteHeader(http.StatusConflict)
@@ -56,7 +56,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusAccepted)
 }
 
-func checkOrderByID(h *Handler, ctx context.Context, orderID string, userID int) error {
+func (h *Handler) checkOrderByID(ctx context.Context, orderID string, userID int) error {
 	var order orderRepo.Order
 	var err error
 	order, err = h.Order.GetByID(ctx, orderID)
