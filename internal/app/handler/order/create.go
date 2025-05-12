@@ -52,7 +52,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	go processingOrder(h, orderID, userID)
+	go h.processingOrder(ctx, orderID, userID)
 	w.WriteHeader(http.StatusAccepted)
 }
 
@@ -71,12 +71,13 @@ func checkOrderByID(h *Handler, ctx context.Context, orderID string, userID int)
 	return ErrExistOrder
 }
 
-func processingOrder(h *Handler, orderID string, userID int) {
+func (h *Handler) processingOrder(ctx context.Context, orderID string, userID int) {
 	sugar := zap.S()
 	chIn := make(chan string)
 	defer close(chIn)
 	chDone := make(chan ProcessedResult)
-	ctx, cancel := context.WithCancel(context.Background())
+	var cancel context.CancelFunc
+	ctx, cancel = context.WithCancel(ctx)
 	defer cancel()
 	go checkStatus(ctx, h, chIn, chDone)
 	var err error
