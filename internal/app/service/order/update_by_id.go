@@ -2,8 +2,8 @@ package order
 
 import "database/sql"
 
-func (s *Service) UpdateByID(OrderID string, Status string, Value sql.NullFloat64) error {
-	err := s.Repo.UpdateByID(OrderID, Status, Value)
+func (s *Service) UpdateByID(orderID string, status string, value sql.NullFloat64) error {
+	err := s.Repo.UpdateByID(orderID, status, value)
 	if err != nil {
 		return err
 	}

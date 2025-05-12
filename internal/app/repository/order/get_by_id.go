@@ -1,9 +1,9 @@
 package order
 
-func (repo *Repository) GetByID(OrderID string) (Order, error) {
+func (repo *Repository) GetByID(orderID string) (Order, error) {
 	var record Order
 	query := "SELECT * FROM \"order\" WHERE id = $1"
-	row := repo.Conn.QueryRow(query, OrderID)
+	row := repo.Conn.QueryRow(query, orderID)
 	err := row.Scan(&record.ID, &record.UserID, &record.Status, &record.Value, &record.UploadedAt)
 	if err != nil {
 		return record, err

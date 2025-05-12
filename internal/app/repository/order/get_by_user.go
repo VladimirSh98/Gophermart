@@ -1,9 +1,9 @@
 package order
 
-func (repo *Repository) GetByUser(UserID int) ([]Order, error) {
+func (repo *Repository) GetByUser(userID int) ([]Order, error) {
 	results := make([]Order, 0)
 	query := "SELECT * FROM \"order\" WHERE user_id = $1 ORDER BY uploaded_at DESC"
-	rows, err := repo.Conn.Query(query, UserID)
+	rows, err := repo.Conn.Query(query, userID)
 	if err != nil {
 		return results, err
 	}

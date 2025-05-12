@@ -3,8 +3,8 @@ package operation
 import "github.com/VladimirSh98/Gophermart.git/internal/app/repository/operation"
 
 type ServiceInterface interface {
-	GetByUser(UserID int) ([]operation.Operation, error)
-	Create(orderID string, UserID int, Value float64) error
+	GetByUser(userID int) ([]operation.Operation, error)
+	Create(orderID string, userID int, value float64) error
 }
 
 type Service struct {

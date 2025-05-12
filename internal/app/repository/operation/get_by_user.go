@@ -1,9 +1,9 @@
 package operation
 
-func (repo *Repository) GetByUser(UserID int) ([]Operation, error) {
+func (repo *Repository) GetByUser(userID int) ([]Operation, error) {
 	results := make([]Operation, 0)
 	query := "SELECT * FROM \"operation\" WHERE user_id = $1 ORDER BY created_at DESC"
-	rows, err := repo.Conn.Query(query, UserID)
+	rows, err := repo.Conn.Query(query, userID)
 	if err != nil {
 		return results, err
 	}

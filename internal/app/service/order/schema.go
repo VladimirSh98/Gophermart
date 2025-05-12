@@ -6,10 +6,10 @@ import (
 )
 
 type ServiceInterface interface {
-	GetByUser(UserID int) ([]orderRepo.Order, error)
-	GetByID(OrderID string) (orderRepo.Order, error)
-	Create(OrderID string, UserID int) error
-	UpdateByID(OrderID string, Status string, Value sql.NullFloat64) error
+	GetByUser(userID int) ([]orderRepo.Order, error)
+	GetByID(orderID string) (orderRepo.Order, error)
+	Create(orderID string, userID int) error
+	UpdateByID(orderID string, status string, value sql.NullFloat64) error
 }
 
 type Service struct {

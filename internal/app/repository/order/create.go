@@ -2,9 +2,9 @@ package order
 
 import "database/sql"
 
-func (repo *Repository) Create(OrderID string, UserID int) (sql.Result, error) {
+func (repo *Repository) Create(orderID string, userID int) (sql.Result, error) {
 	query := "INSERT INTO \"order\" (id, user_id, status) VALUES ($1, $2, 'NEW');"
-	res, err := repo.Conn.Exec(query, OrderID, UserID)
+	res, err := repo.Conn.Exec(query, orderID, userID)
 
 	if err != nil {
 		return nil, err
