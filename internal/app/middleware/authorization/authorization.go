@@ -20,12 +20,12 @@ func Authorization(handler *authHandler.Handler) func(h http.Handler) http.Handl
 				w.WriteHeader(http.StatusUnauthorized)
 				return
 			}
-			err = auth.checkUser(handler)
+			ctx := context.WithValue(r.Context(), UserIDKey, auth.UserID)
+			err = auth.checkUser(ctx, handler)
 			if err != nil {
 				w.WriteHeader(http.StatusUnauthorized)
 				return
 			}
-			ctx := context.WithValue(r.Context(), UserIDKey, auth.UserID)
 			h.ServeHTTP(w, r.WithContext(ctx))
 		}
 		return http.HandlerFunc(logFn)
