@@ -15,23 +15,23 @@ import (
 
 func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	sugar := zap.S()
-	UserID := r.Context().Value(authorization.UserIDKey).(int)
+	userID := r.Context().Value(authorization.UserIDKey).(int)
 	body, err := io.ReadAll(r.Body)
 	if err != nil || len(body) == 0 {
 		sugar.Errorln("CreateShortURL body read error", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	OrderID := string(body)
+	orderID := string(body)
 
-	valid := luhn.IsValid(OrderID)
+	valid := luhn.IsValid(orderID)
 	if !valid {
-		sugar.Warnln("Create order validation error", OrderID)
+		sugar.Warnln("Create order validation error", orderID)
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		return
 	}
 
-	err = checkOrderByID(h, OrderID, UserID)
+	err = checkOrderByID(h, orderID, userID)
 	if errors.Is(err, ErrOrderLoadedByAnother) {
 		sugar.Warn(err)
 		w.WriteHeader(http.StatusConflict)
@@ -45,32 +45,32 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	err = h.Order.Create(OrderID, UserID)
+	err = h.Order.Create(orderID, userID)
 	if err != nil {
 		sugar.Error(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	go processingOrder(h, OrderID, UserID)
+	go processingOrder(h, orderID, userID)
 	w.WriteHeader(http.StatusAccepted)
 }
 
-func checkOrderByID(h *Handler, OrderID string, UserID int) error {
+func checkOrderByID(h *Handler, orderID string, userID int) error {
 	var order orderRepo.Order
 	var err error
-	order, err = h.Order.GetByID(OrderID)
+	order, err = h.Order.GetByID(orderID)
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil
 	} else if err != nil {
 		return err
 	}
-	if order.UserID != UserID {
+	if order.UserID != userID {
 		return ErrOrderLoadedByAnother
 	}
 	return ErrExistOrder
 }
 
-func processingOrder(h *Handler, OrderID string, UserID int) {
+func processingOrder(h *Handler, orderID string, userID int) {
 	sugar := zap.S()
 	chIn := make(chan string)
 	defer close(chIn)
@@ -80,7 +80,7 @@ func processingOrder(h *Handler, OrderID string, UserID int) {
 	go checkStatus(ctx, h, chIn, chDone)
 	var err error
 	for {
-		chIn <- OrderID
+		chIn <- orderID
 		result := <-chDone
 		switch result.Status {
 		case RegisteredStatus:
@@ -98,7 +98,7 @@ func processingOrder(h *Handler, OrderID string, UserID int) {
 			if err != nil {
 				sugar.Error(err)
 			}
-			err = h.Reward.AccrueReward(UserID, result.Accrual)
+			err = h.Reward.AccrueReward(userID, result.Accrual)
 			if err != nil {
 				sugar.Error(err)
 			}
@@ -122,30 +122,30 @@ func checkStatus(ctx context.Context, h *Handler, chIn chan string, chDone chan 
 		case <-ctx.Done():
 			sugar.Infoln("checkStatus context cancelled")
 			return
-		case OrderID, ok := <-chIn:
+		case orderID, ok := <-chIn:
 			if !ok {
 				sugar.Infoln("checkStatus input channel closed")
 				return
 			}
-			result, err := h.Accrual.GetByNumber(OrderID)
+			result, err := h.Accrual.GetByNumber(orderID)
 			if err != nil {
 				continue
 			}
 			if result.StatusCode == http.StatusOK {
 				chDone <- ProcessedResult{
-					OrderID: OrderID,
+					OrderID: orderID,
 					Status:  result.Status,
 					Accrual: result.Accrual,
 				}
 			} else if result.StatusCode == http.StatusTooManyRequests {
 				time.Sleep(1 * time.Second)
 				chDone <- ProcessedResult{
-					OrderID: OrderID,
+					OrderID: orderID,
 					Status:  RegisteredStatus,
 				}
 			} else {
 				chDone <- ProcessedResult{
-					OrderID: OrderID,
+					OrderID: orderID,
 					Status:  InvalidStatus,
 				}
 			}

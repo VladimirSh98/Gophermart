@@ -9,8 +9,8 @@ import (
 
 func (h *Handler) GetByUser(w http.ResponseWriter, r *http.Request) {
 	sugar := zap.S()
-	UserID := r.Context().Value(authorization.UserIDKey).(int)
-	res, err := h.Reward.GetByUser(UserID)
+	userID := r.Context().Value(authorization.UserIDKey).(int)
+	res, err := h.Reward.GetByUser(userID)
 	if err != nil {
 		sugar.Errorln("GetByUser error", err)
 		w.WriteHeader(http.StatusInternalServerError)
