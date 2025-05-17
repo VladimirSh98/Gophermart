@@ -10,6 +10,7 @@ import (
 	rewardHandler "github.com/VladimirSh98/Gophermart.git/internal/app/handler/reward"
 	"github.com/VladimirSh98/Gophermart.git/internal/app/middleware"
 	"github.com/VladimirSh98/Gophermart.git/internal/app/middleware/authorization"
+	"github.com/VladimirSh98/Gophermart.git/internal/app/models"
 	operationRepository "github.com/VladimirSh98/Gophermart.git/internal/app/repository/operation"
 	orderRepository "github.com/VladimirSh98/Gophermart.git/internal/app/repository/order"
 	rewardRepository "github.com/VladimirSh98/Gophermart.git/internal/app/repository/reward"
@@ -28,8 +29,8 @@ func Run() error {
 	var err error
 	sugar := zap.S()
 
-	config.Conf = config.Config{}
-	err = config.Conf.Load()
+	config.Conf = models.Config{}
+	err = config.Load(&config.Conf)
 	if err != nil {
 		sugar.Errorf("Error loading config: %v", err)
 		return err

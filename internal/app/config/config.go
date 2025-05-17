@@ -1,8 +1,10 @@
 package config
 
-var Conf Config
+import "github.com/VladimirSh98/Gophermart.git/internal/app/models"
 
-func (conf *Config) Load() error {
+var Conf models.Config
+
+func Load(conf *models.Config) error {
 	var err error
 
 	baseConf := &baseConfig{}
@@ -11,21 +13,21 @@ func (conf *Config) Load() error {
 		return err
 	}
 
-	flagConf := &Config{}
-	flagConf.parseFlag(baseConf)
+	flagConf := &models.Config{}
+	parseFlag(flagConf, baseConf)
 
-	envConf := &Config{}
-	err = envConf.parseEnv()
+	envConf := &models.Config{}
+	err = parseEnv(envConf)
 	if err != nil {
 		return err
 	}
 
-	conf.result(flagConf, envConf, baseConf)
+	result(conf, flagConf, envConf, baseConf)
 
 	return nil
 }
 
-func (conf *Config) result(flagConf *Config, envConf *Config, baseConf *baseConfig) {
+func result(conf *models.Config, flagConf *models.Config, envConf *models.Config, baseConf *baseConfig) {
 	if envConf.RunAddress != "" {
 		conf.RunAddress = envConf.RunAddress
 	} else {

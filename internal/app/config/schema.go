@@ -1,14 +1,5 @@
 package config
 
-type Config struct {
-	AccrualSystemAddress string `env:"ACCRUAL_SYSTEM_ADDRESS"`
-	RunAddress           string `env:"RUN_ADDRESS"`
-	DatabaseURI          string `env:"DATABASE_URI"`
-	SecretKey            string `env:"SECRET_KEY"`
-	MigrationsDir        string
-	TokenExp             int
-}
-
 type baseConfig struct {
 	RunAddress           string `yaml:"run_address"`
 	AccrualSystemAddress string `yaml:"accrual_system_address"`
