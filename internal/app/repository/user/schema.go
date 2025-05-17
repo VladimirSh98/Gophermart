@@ -13,6 +13,6 @@ type User struct {
 	ID        int
 	CreatedAt time.Time
 	Login     string
-	Password  string
+	Hash      string
 	Archived  bool
 }

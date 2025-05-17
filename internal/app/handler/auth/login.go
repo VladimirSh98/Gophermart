@@ -33,7 +33,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(user.Hash), []byte(data.Password))
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
